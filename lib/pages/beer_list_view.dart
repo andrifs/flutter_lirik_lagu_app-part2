@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lirik_lagu_app/data/datasource/lagu_remote_datasource.dart';
 import 'package:flutter_lirik_lagu_app/data/models/lagu_response_model.dart';
+import 'package:flutter_lirik_lagu_app/pages/add_lagu_page.dart';
+import 'package:flutter_lirik_lagu_app/pages/lagu_detail_page.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class BeerListView extends StatefulWidget {
@@ -13,10 +15,6 @@ class BeerListView extends StatefulWidget {
 class _BeerListViewState extends State<BeerListView> {
   final PagingController<int, Lagu> _pagingController =
       PagingController(firstPageKey: 1);
-
-  final TextEditingController judulController = TextEditingController();
-  final TextEditingController laguController = TextEditingController();
-  final TextEditingController daerahController = TextEditingController();
 
   @override
   void initState() {
@@ -40,6 +38,10 @@ class _BeerListViewState extends State<BeerListView> {
     }
   }
 
+  Future<void> _refreshPage() async {
+    _pagingController.refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,16 +58,20 @@ class _BeerListViewState extends State<BeerListView> {
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<Lagu>(
           itemBuilder: (context, item, index) {
-            return Card(
-              child: ListTile(
-                title: Text(item.judul),
-                subtitle: Text(item.daerah),
-                leading: const CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.blueAccent,
-                  child: Icon(
-                    Icons.music_note,
-                    color: Colors.white,
+            return InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return LaguDetailPage(lagu: item);
+                }));
+              },
+              child: Card(
+                child: ListTile(
+                  title: Text(item.judul),
+                  subtitle: Text(item.daerah),
+                  leading: CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(
+                        '${LaguRemoteDatasource.imageUrl}/${item.imageUrl}'),
                   ),
                 ),
               ),
@@ -74,56 +80,11 @@ class _BeerListViewState extends State<BeerListView> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Add New Lagu'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Judul',
-                        ),
-                        controller: judulController,
-                      ),
-                      TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Lagu',
-                        ),
-                        maxLines: 5,
-                        controller: laguController,
-                      ),
-                      TextField(
-                        decoration: const InputDecoration(
-                          hintText: 'Daerah',
-                        ),
-                        controller: daerahController,
-                      )
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        LaguRemoteDatasource().addLaguDaerah(
-                          judulController.text,
-                          laguController.text,
-                          daerahController.text,
-                        );
-                      },
-                      child: const Text('Add'),
-                    )
-                  ],
-                );
-              });
+        onPressed: () async {
+          await Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const AddLaguPage();
+          }));
+          await _refreshPage();
         },
         backgroundColor: Colors.blueAccent,
         child: const Icon(

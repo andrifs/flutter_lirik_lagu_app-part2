@@ -1,4 +1,3 @@
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 class LaguResponseModel {
@@ -100,6 +99,7 @@ class Lagu {
   final String judul;
   final String lagu;
   final String daerah;
+  final String? imageUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -108,6 +108,7 @@ class Lagu {
     required this.judul,
     required this.lagu,
     required this.daerah,
+    this.imageUrl,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -121,6 +122,7 @@ class Lagu {
         judul: json["judul"],
         lagu: json["lagu"],
         daerah: json["daerah"],
+        imageUrl: json["image_url"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
@@ -130,6 +132,7 @@ class Lagu {
         "judul": judul,
         "lagu": lagu,
         "daerah": daerah,
+        // "image_url": imageUrl,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
       };

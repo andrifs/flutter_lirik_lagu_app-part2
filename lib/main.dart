@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_lirik_lagu_app/pages/beer_list_view.dart';
-import 'package:flutter_lirik_lagu_app/pages/home_page.dart';
-import 'package:flutter_lirik_lagu_app/pages/lagu_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +17,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BeerListView(),
+      home: const BeerListView(),
     );
   }
 }
